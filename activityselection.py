@@ -6,7 +6,7 @@ from collections import namedtuple
 import math
 
 filename = sys.argv[1]
-print "filename is:", filename, "\n" 
+#print "filename is:", filename, "\n" 
 
 try:
     file = open(filename, "r");
@@ -23,10 +23,11 @@ n, k = map(int, firstline.split(" "))
 
 activity = namedtuple('activity', ['i', 's', 'f', 'p'])
 activitylist = [] #list of activities
-
+a = activity(0,0,0,0)
+activitylist.append(a)
 # iterate through n lines and read them to a namedtuple for each activity
 
-for i in range(1,n):
+for i in range(n):
     oneline = file.readline()
     i,s,f,p = map(int, oneline.split(" "))
     a = activity(i,s,f,p)
@@ -73,12 +74,6 @@ def max(x,y):
             else: return y
         else: return x
 
-for a in activitylist:
-    if(isCharitable(a)):
-        print a.i, a.s, a.f, a.p
-
-        
-
 
 # code for asp1 problem
 
@@ -96,62 +91,93 @@ def asp1MaxProfit(asp1):
         maximum = max(maximum, ap)
     return maximum
 
-for a in activitylist: #iterate through the activities in increasing order
-    if (isCharitable(a)):
-        maxAsp = 0
-        for j in range(1,a.i):
-            maxAsp = max(maxAsp, asp1[j])
-        asp1.append(maxAsp) #maxAsp + 0 appended for charitable events
+# for a in activitylist: #iterate through the activities in increasing order
+#     if (isCharitable(a)):
+#         maxAsp = 0
+#         for j in range(0,a.i):
+#             if(isCompatible(a,activitylist[j])):
+#                 maxAsp = max(maxAsp, asp1[j])
+#         asp1.append(maxAsp) #maxAsp + 0 appended for charitable events
         
-    if (not isCharitable(a)): # a is a profitable event
-        maxAsp = 0
-        for m in range(1,a.i):
-            if (isCompatible(a, activitylist[m]) and isCharitable(activitylist[m])):
-                maxAsp = max(maxAsp, asp1[m])
-        asp1.append(maxAsp + a.p)
+#     if (not isCharitable(a)): # a is a profitable event
+#         maxAsp = 0
+#         for m in range(0,a.i):
+#             if (isCompatible(a, activitylist[m]) and isCharitable(activitylist[m])):
+#                 maxAsp = max(maxAsp, asp1[m])
+#         asp1.append(maxAsp + a.p)
 
 
-print asp1MaxProfit(asp1)
-print asp1
+# print asp1MaxProfit(asp1)
+# print asp1
+
+asp1new = [0 for i in range(0,n+1)]
+
+for i in range(1,n+1):
+    if (isCharitable(activitylist[i])):
+        p = 0
+        for j in range(i-1,-1,-1):
+            if(isCompatible(activitylist[i],activitylist[j])):
+                p = max(p,asp1new[j])
+        asp1new[i] = p + activitylist[i].p
+
+    if(not isCharitable(activitylist[i])):
+        p = 0
+        for j in range(i-1,-1,-1):
+            if(isCompatible(activitylist[i],activitylist[j]) and isCharitable(activitylist[j])):
+                p = max(p,asp1new[j])
+        asp1new[i] = p + activitylist[i].p
+
+print asp1new
+print asp1MaxProfit(asp1new)
 
 
+ 
 #Activity selection 2 solution
 
 negInf = float('nan')
-print "Asp2 :-------"
-print n, k
+#print "Asp2 :-------"
+#print n, k
 asp2 = [ [ 0 for j in range(k+1)] for i in range(n+1)] # base case when i = 0, j = 0
-print asp2
+#print asp2
 
 for j in range(1,k+1):   # base case when i = 0 and j > 0
     asp2[0][j] = negInf
+#print asp2
 
 
+# base case when j = 0
+for i in range(1,n+k):
+    q = asp2[i-1][0]
+    for m in range(i-1,-1,-1):
+        if(isCompatible(activitylist[i],activitylist[m])):
+            q = max(q,asp2[m][0] + activitylist[i].p)
+            break
+    asp2[i][0] = q
+                   
+#print asp2
+
+#print "base cases over"
+    
 for i in range(1,n+1):
     for j in range(1,k+1):
 
         if (isCharitable(activitylist[i])):
             q = asp2[i-1][j] # don't include current activity. prev act gives best sol
-            for m in range(i-1,0,-1): # count downward till 1 decrement by one
+            for m in range(i-1,-1,-1): # count downward till 1 decrement by one
                 if (isCompatible(activitylist[i],activitylist[m])): # if a_k is compatible with a_i
                     q = max(q, asp2[m][j-1])
                     break
-            print i 
-            print j
             asp2[i][j] = q
 
         if (not isCharitable(activitylist[i])): # if it's a for_profit activity
             q = asp2[i-1][j]
-            for m in range(i-1,0,-1):
+            for m in range(i-1,-1,-1):
                 if (isCompatible(activitylist[i],activitylist[m])):
-                    q = max(q,asp2[m][j-1] + activitylist[i].p)
+                    q = max(q,asp2[m][j] + activitylist[i].p)
                     break
-            
             asp2[i][j] = q
-
+        #print asp2
 
 print asp2[n][k]
-print asp2
-
 
 #todo add when 0 charitable event needs to be scheduled
