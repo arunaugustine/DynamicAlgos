@@ -34,8 +34,8 @@ for i in range(n):
     activitylist.append(a)
 
 
-for a in activitylist:
-    print a.i, a.s, a.f,a.p 
+#for a in activitylist:
+#    print a.i, a.s, a.f,a.p 
 
 
 def isCompatible(a,b): 
@@ -127,7 +127,7 @@ for i in range(1,n+1):
                 p = max(p,asp1new[j])
         asp1new[i] = p + activitylist[i].p
 
-print asp1new
+#print asp1new
 print asp1MaxProfit(asp1new)
 
 
