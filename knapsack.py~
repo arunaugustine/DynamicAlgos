@@ -1,0 +1,20 @@
+#! /usr/bin/python
+
+import sys
+import math
+
+filename = sys.argv[1]
+
+try:
+    file = open(filename, "r")
+except IOError:
+    print "Can't open the file for reading"
+    sys.exit(0)
+
+firstline = file.readline()
+
+n , t = map(int,firstline.split(" "))
+
+inputline = file.readline()
+
+print inputline.split(" ")

@@ -1,0 +1,10 @@
+Programmer: Arun Augustine
+Files: activityselection.py and knapsack.py
+Programing Language: Python
+
+How To Run: 
+* No compilation necessary
+* please make sure the first line in the source file point to appropriate location of python
+* Example of how to run:
+./activityselection.py inputfile.txt
+./knapsack.py inputfile.txt
