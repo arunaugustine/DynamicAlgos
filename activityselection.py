@@ -111,7 +111,6 @@ def asp1MaxProfit(asp1):
 # print asp1
 
 asp1new = [0 for i in range(0,n+1)]
-
 for i in range(1,n+1):
     if (isCharitable(activitylist[i])):
         p = 0
